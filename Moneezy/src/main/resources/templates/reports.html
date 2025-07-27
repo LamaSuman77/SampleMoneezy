@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reports - Moneezy</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f4f6f9;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #1e293b;
+            color: #fff;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 0;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #fff;
+            background-color: #334155;
+            padding-left: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar form button {
+            font-size: 16px;
+            color: #cbd5e1;
+            padding: 10px;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar form button:hover {
+            color: #fff;
+            background-color: #334155;
+            padding-left: 10px;
+            border-radius: 5px;
+        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #1e293b;
+            font-size: 28px;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-container h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        iframe {
+            border: none;
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        a.back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        a.back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Moneezy</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a th:href="@{/revenues/new}">Add Revenue</a>
+    <a th:href="@{/expenses/new}">Add Expense</a>
+    <a href="/revenues">View Revenues</a>
+    <a href="/expenses">View Expenses</a>
+    <a href="/reports" class="active">Reports</a>
+    <a href="/settings">Settings</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<div class="main">
+    <h2>📊 Financial Reports</h2>
+
+    <div class="chart-container">
+        <canvas id="revenueExpenseChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h3>💱 Live Forex Chart</h3>
+        <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget"
+                allowtransparency="true"
+                scrolling="no"
+                allowfullscreen=""
+                style="box-sizing: border-box;"
+                srcdoc='<!DOCTYPE html>
+                    <html>
+                    <head><meta charset="utf-8"></head>
+                    <body>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                      {
+                        "symbol": "FX:EURUSD",
+                        "width": "100%",
+                        "height": "100%",
+                        "locale": "en",
+                        "dateRange": "12M",
+                        "colorTheme": "light",
+                        "trendLineColor": "rgba(41, 98, 255, 1)",
+                        "underLineColor": "rgba(41, 98, 255, 0.3)",
+                        "isTransparent": false,
+                        "autosize": true,
+                        "largeChartUrl": ""
+                      }
+                    </script>
+                    </body>
+                    </html>'>
+        </iframe>
+    </div>
+
+    <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+</div>
+
+<script th:inline="javascript">
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const revenues = /*[[${revenues}]]*/ [];
+    const expenses = /*[[${expenses}]]*/ [];
+
+    const ctx = document.getElementById('revenueExpenseChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'Revenue',
+                    data: revenues,
+                    backgroundColor: '#2e7d32'
+                },
+                {
+                    label: 'Expenses',
+                    data: expenses,
+                    backgroundColor: '#c62828'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Revenue vs Expenses (Monthly)'
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

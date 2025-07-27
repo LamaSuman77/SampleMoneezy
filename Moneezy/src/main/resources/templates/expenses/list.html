@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Expense List - Moneezy</title>
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f4f6f9;
+        padding: 30px;
+    }
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    h2 {
+        margin-bottom: 20px;
+        color: #d32f2f;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 25px;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #ffebee;
+    }
+    a.button {
+        padding: 8px 14px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        color: white;
+        background-color: #d32f2f;
+        margin-right: 5px;
+    }
+    a.button.edit {
+        background-color: #0288d1;
+    }
+    a.button.delete {
+        background-color: #c62828;
+    }
+    .actions {
+        white-space: nowrap;
+    }
+    .top-actions {
+        margin-bottom: 20px;
+        text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>All Expenses</h2>
+
+  <div class="top-actions">
+    <a class="button" href="/expenses/new">+ Add Expense</a>
+    <a class="button" href="/dashboard">← Back to Dashboard</a>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Description</th>
+      <th>Notes</th>
+      <th class="actions">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="expense : ${expenses}">
+      <td th:text="${expense.date}">2025-07-23</td>
+      <td th:text="${expense.amount}">200</td>
+      <td th:text="${expense.description}">Groceries</td>
+      <td th:text="${expense.notes}">Walmart</td>
+      <td class="actions">
+        <a th:href="@{'/expenses/edit/' + ${expense.id}}" class="button edit">Edit</a>
+        <a th:href="@{'/expenses/delete/' + ${expense.id}}" class="button delete" onclick="return confirm('Are you sure?')">Delete</a>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(expenses)}">
+      <td colspan="5" style="text-align:center;">No expense records found.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

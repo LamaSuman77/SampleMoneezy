@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${revenue.id == null ? 'Add Revenue' : 'Edit Revenue'} + ' - Moneezy'"></title>
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f4f6f9;
+        padding: 30px;
+    }
+    form {
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        max-width: 500px;
+        margin: auto;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    h2 {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin: 15px 0 5px;
+        font-weight: 600;
+    }
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+    button {
+        margin-top: 20px;
+        background-color: #388e3c;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #2e7d32;
+    }
+    a {
+        display: inline-block;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<form th:action="@{${revenue.id == null} ? '/revenues' : '/revenues/update/' + ${revenue.id}}" th:object="${revenue}" method="post">
+  <h2 th:text="${revenue.id == null ? 'Add Revenue' : 'Edit Revenue'}"></h2>
+
+  <!-- Date -->
+  <label for="date">Date</label>
+  <input type="date" id="date" th:field="*{date}" required />
+
+  <!-- Amount -->
+  <label for="amount">Amount</label>
+  <input type="number" id="amount" th:field="*{amount}" required />
+
+  <!-- Description -->
+  <label for="description">Description</label>
+  <input type="text" id="description" th:field="*{description}" required />
+
+  <!-- Notes -->
+  <label for="notes">Notes</label>
+  <textarea id="notes" th:field="*{notes}" rows="3"></textarea>
+
+  <input type="hidden" th:field="*{type}" value="REVENUE" />
+
+  <button type="submit">Save Revenue</button>
+  <a href="/revenues">Cancel</a>
+</form>
+
+</body>
+</html>

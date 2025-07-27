@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Moneezy Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f6f9;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #1e293b;
+            color: #fff;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 0;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #fff;
+            background-color: #334155;
+            padding-left: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar form button {
+            font-size: 16px;
+            color: #cbd5e1;
+            padding: 10px;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar form button:hover {
+            color: #fff;
+            background-color: #334155;
+            padding-left: 10px;
+            border-radius: 5px;
+        }
+
+        .main {
+            flex: 1;
+            padding: 40px 60px;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1e293b;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+            padding: 25px;
+            flex: 1;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .card h1 {
+            font-size: 28px;
+            color: #1e293b;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .actions button {
+            background-color: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .actions button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .recent-transactions {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+        }
+
+        .recent-transactions h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .recent-transactions ul {
+            list-style: none;
+        }
+
+        .recent-transactions li {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .recent-transactions li:last-child {
+            border-bottom: none;
+        }
+
+        .recent-transactions strong {
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h2>Moneezy</h2>
+    <a href="/dashboard" class="active">Dashboard</a>
+    <a th:href="@{/revenues/new}">Add Revenue</a>
+    <a th:href="@{/expenses/new}">Add Expense</a>
+    <a href="/revenues">View Revenues</a>
+    <a href="/expenses">View Expenses</a>
+    <a href="/reports">Reports</a>
+    <a href="/settings">Settings</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<div class="main">
+    <div class="header">
+        <h1>Welcome, <span th:text="${username}">User</span></h1>
+        <p th:text="${month}">July 2025</p>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Revenue</h3>
+            <h1 th:text="${totalRevenue}">$0</h1>
+        </div>
+        <div class="card">
+            <h3>Total Expenses</h3>
+            <h1 th:text="${totalExpenses}">$0</h1>
+        </div>
+        <div class="card">
+            <h3>Net Savings</h3>
+            <h1 th:text="${netSavings}">$0</h1>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button onclick="location.href='/revenues/new'">+ Add Revenue</button>
+        <button onclick="location.href='/expenses/new'">+ Add Expense</button>
+    </div>
+
+    <div class="recent-transactions" th:if="${recentTransactions != null}">
+        <h3>Recent Transactions</h3>
+        <ul>
+            <li th:each="tx : ${recentTransactions}">
+                <span>
+                    <strong th:text="${tx.date}">2025-07-01</strong> —
+                    <span th:text="${tx.description}">Description</span>
+                </span>
+                <span th:text="${tx.amount}">100.00</span>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

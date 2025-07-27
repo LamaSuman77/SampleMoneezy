@@ -1,0 +1,7 @@
+package MyFinance.Moneezy.repository;
+
+import MyFinance.Moneezy.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+}

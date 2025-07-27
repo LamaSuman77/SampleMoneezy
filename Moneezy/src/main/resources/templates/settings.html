@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings - Moneezy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #1e293b; /* updated color */
+            color: white;
+            height: 100vh;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .sidebar a,
+        .sidebar-btn {
+            display: block;
+            color: #cfd8dc;
+            text-decoration: none;
+            margin-bottom: 18px;
+            font-weight: 500;
+            background: none;
+            border: none;
+            padding: 10px 0;
+            width: 100%;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar a:hover,
+        .sidebar-btn:hover {
+            color: white;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 40px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .settings-container {
+            max-width: 700px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        form label {
+            display: block;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        form input,
+        form select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        form input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .save-btn {
+            background-color: #1e293b; /* match sidebar */
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: #111827; /* slightly darker */
+        }
+
+        .delete-btn {
+            background-color: #c62828;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Moneezy</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/revenues/new">Add Revenue</a>
+    <a href="/expenses/new">Add Expense</a>
+    <a href="/revenues">View Revenues</a>
+    <a href="/expenses">View Expenses</a>
+    <a href="/reports">Reports</a>
+    <a href="/settings">Settings</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="sidebar-btn logout-btn">Logout</button>
+    </form>
+</div>
+
+<div class="main">
+    <div class="settings-container">
+        <h1>Settings</h1>
+
+        <form th:action="@{/settings}" method="post" th:object="${settingsForm}">
+            <label>Email</label>
+            <input type="email" th:field="*{email}" required />
+
+            <label>Preferred Currency</label>
+            <select th:field="*{preferredCurrency}">
+                <option value="USD">USD - US Dollar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="GBP">GBP - British Pound</option>
+                <option value="NPR">NPR - Nepalese Rupee</option>
+                <option value="INR">INR - Indian Rupee</option>
+            </select>
+
+            <label>
+                <input type="checkbox" th:field="*{notificationsEnabled}" />
+                Enable Email Notifications
+            </label>
+
+            <label>New Password</label>
+            <input type="password" th:field="*{newPassword}" placeholder="Leave blank if unchanged" />
+
+            <label>Confirm New Password</label>
+            <input type="password" th:field="*{confirmPassword}" />
+
+            <div class="form-actions">
+                <button type="submit" class="save-btn">Save Changes</button>
+                <button type="submit" class="delete-btn" formaction="/settings/delete" formmethod="post"
+                        onclick="return confirm('Are you sure you want to delete your account?');">
+                    Delete Account
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
