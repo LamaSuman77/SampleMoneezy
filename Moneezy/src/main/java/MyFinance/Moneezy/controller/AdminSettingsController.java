@@ -25,9 +25,7 @@ public class AdminSettingsController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // ❌ REMOVED the conflicting GET method here
-
-    // ✅ Update admin settings (email + password)
+    // Update admin settings (email + password)
     @PostMapping
     public String updateAdminSettings(@RequestParam String email,
                                       @RequestParam(required = false) String newPassword,
@@ -56,7 +54,7 @@ public class AdminSettingsController {
         return "redirect:/admin/settings";
     }
 
-    // ✅ Delete admin account
+    // Delete admin account
     @PostMapping("/delete")
     @Transactional
     public String deleteAdmin(Principal principal,

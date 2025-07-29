@@ -23,7 +23,7 @@ public class AdminController {
     @Autowired private UserRepository userRepository;
     @Autowired private AdminService adminService;
 
-    // ✅ Admin Dashboard
+    // Admin Dashboard
     @GetMapping("/dashboard")
     public String adminDashboard(Model model, @AuthenticationPrincipal UserDetails currentUser) {
         long userCount = userRepository.count();
@@ -32,7 +32,7 @@ public class AdminController {
         return "admin-dashboard";
     }
 
-    // ✅ List All Users
+    // List All Users
     @GetMapping("/users")
     public String viewAllUsers(Model model) {
         List<User> users = userRepository.findAll();
@@ -40,7 +40,7 @@ public class AdminController {
         return "admin-user-list";
     }
 
-    // ✅ Unified Admin Settings Page (Profile + Password)
+    // Unified Admin Settings Page (Profile + Password)
     @GetMapping("/settings")
     public String showAdminSettings(Model model, @AuthenticationPrincipal UserDetails currentUser) {
         Admin admin = adminService.getAdminByUsername(currentUser.getUsername());
@@ -51,7 +51,7 @@ public class AdminController {
         return "admin-settings";
     }
 
-    // ✅ Save Profile Settings
+    // Save Profile Settings
     @PostMapping("/profile")
     public String updateAdminProfile(@ModelAttribute("admin") Admin updatedAdmin,
                                      @AuthenticationPrincipal UserDetails currentUser,
@@ -71,7 +71,7 @@ public class AdminController {
         return "redirect:/admin/settings";
     }
 
-    // ✅ Change Password Logic
+    // Change Password Logic
     @PostMapping("/change-password")
     public String changeAdminPassword(@RequestParam String oldPassword,
                                       @RequestParam String newPassword,
@@ -105,14 +105,14 @@ public class AdminController {
         return "redirect:/admin/settings";
     }
 
-    // ✅ Password strength check
+    // Password strength check
     private boolean isStrongPassword(String password) {
         return password.length() >= 8 &&
                 password.matches(".*[A-Z].*") &&
                 password.matches(".*\\d.*");
     }
 
-    // ✅ Reset User Password to 'default123'
+    // Reset User Password to 'default123'
     @PostMapping("/users/reset/{id}")
     public String resetUserPassword(@PathVariable Long id) {
         userRepository.findById(id).ifPresent(user -> {
@@ -122,7 +122,7 @@ public class AdminController {
         return "redirect:/admin/users?resetSuccess";
     }
 
-    // ✅ Delete User (prevent deleting currently logged-in admin)
+    // Delete User (prevent deleting currently logged-in admin)
     @PostMapping("/users/delete/{id}")
     public String deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
         userRepository.findById(id).ifPresent(user -> {

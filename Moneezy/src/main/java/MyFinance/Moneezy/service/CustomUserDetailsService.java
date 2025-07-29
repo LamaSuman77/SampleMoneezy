@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // ✅ 1. Try to load admin first
+        // 1. Try to load admin first
         Admin admin = adminRepository.findByUsername(username).orElse(null);
         if (admin != null) {
             return org.springframework.security.core.userdetails.User
@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .build();
         }
 
-        // ✅ 2. If not admin, try regular user
+        // 2. If not admin, try regular user
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 

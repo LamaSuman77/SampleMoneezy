@@ -8,7 +8,7 @@ public class SettingsForm {
     private String newPassword;
     private String confirmPassword;
 
-    // === Getters and Setters ===
+    //Getters and Setters
 
     public String getEmail() {
         return email;

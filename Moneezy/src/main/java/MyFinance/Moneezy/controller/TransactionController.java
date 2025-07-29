@@ -22,7 +22,7 @@ public class TransactionController {
         this.userService = userService;
     }
 
-    // ✅ View all transactions (Revenue + Expense)
+    //View all transactions (Revenue + Expense)
     @GetMapping("/transactions")
     public String listAllTransactions(Model model, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
@@ -31,7 +31,7 @@ public class TransactionController {
         return "transactions/list"; // → templates/transactions/list.html
     }
 
-    // ✅ View a single transaction by ID
+    // View a single transaction by ID
     @GetMapping("/transactions/view/{id}")
     public String viewTransaction(@org.springframework.web.bind.annotation.PathVariable Long id, Model model, Principal principal) {
         Transaction transaction = transactionService.getById(id);

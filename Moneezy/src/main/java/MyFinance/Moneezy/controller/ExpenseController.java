@@ -27,7 +27,7 @@ public class ExpenseController {
         this.transactionService = transactionService;
     }
 
-    // 📄 LIST all expenses
+    //LIST all expenses
     @GetMapping
     public String listExpenses(Model model, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
@@ -38,7 +38,7 @@ public class ExpenseController {
         return "expenses/list"; // → templates/expenses/list.html
     }
 
-    // ➕ SHOW form to add new expense
+    // SHOW form to add new expense
     @GetMapping("/new")
     public String showAddForm(Model model) {
         Transaction expense = new Transaction();
@@ -47,7 +47,7 @@ public class ExpenseController {
         return "expenses/form"; // → templates/expenses/form.html
     }
 
-    // 💾 SAVE new expense
+    // SAVE new expense
     @PostMapping
     public String saveExpense(@ModelAttribute("expense") Transaction expense, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
@@ -57,7 +57,7 @@ public class ExpenseController {
         return "redirect:/expenses";
     }
 
-    // 🖊️ EDIT expense
+    // EDIT expense
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
         Transaction expense = transactionService.getById(id);
@@ -68,7 +68,7 @@ public class ExpenseController {
         return "expenses/form";
     }
 
-    // ✅ UPDATE expense
+    // UPDATE expense
     @PostMapping("/update/{id}")
     public String updateExpense(@PathVariable Long id, @ModelAttribute("expense") Transaction expenseForm, Principal principal) {
         Transaction existing = transactionService.getById(id);

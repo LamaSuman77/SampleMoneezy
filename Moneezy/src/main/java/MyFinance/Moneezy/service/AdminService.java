@@ -39,7 +39,7 @@ public class AdminService {
         }
     }
 
-    // ✅ This method is required for resetting user password
+    // Required for resetting user password
     public String encode(String rawPassword) {
         return passwordEncoder.encode(rawPassword);
     }

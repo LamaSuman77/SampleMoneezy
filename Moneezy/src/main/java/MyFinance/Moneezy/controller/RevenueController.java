@@ -27,7 +27,7 @@ public class RevenueController {
         this.transactionService = transactionService;
     }
 
-    // 📄 LIST all revenues
+    // LIST all revenues
     @GetMapping
     public String listRevenues(Model model, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
@@ -38,7 +38,7 @@ public class RevenueController {
         return "revenues/list"; // → templates/revenues/list.html
     }
 
-    // ➕ SHOW form to add revenue
+    // SHOW form to add revenue
     @GetMapping("/new")
     public String showAddForm(Model model) {
         Transaction revenue = new Transaction();
@@ -47,7 +47,7 @@ public class RevenueController {
         return "revenues/form"; // Shared revenue form
     }
 
-    // 💾 SAVE new revenue
+    // SAVE new revenue
     @PostMapping
     public String saveRevenue(@ModelAttribute("revenue") Transaction revenue, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
@@ -57,7 +57,7 @@ public class RevenueController {
         return "redirect:/revenues";
     }
 
-    // 🖊️ EDIT an existing revenue
+    //EDIT an existing revenue
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
         Transaction revenue = transactionService.getById(id);
@@ -68,7 +68,7 @@ public class RevenueController {
         return "revenues/form";
     }
 
-    // ✅ UPDATE revenue
+    // UPDATE revenue
     @PostMapping("/update/{id}")
     public String updateRevenue(@PathVariable Long id, @ModelAttribute("revenue") Transaction revenueForm, Principal principal) {
         Transaction existing = transactionService.getById(id);
@@ -81,7 +81,7 @@ public class RevenueController {
         return "redirect:/revenues";
     }
 
-    // ❌ DELETE revenue
+    // DELETE revenue
     @GetMapping("/delete/{id}")
     public String deleteRevenue(@PathVariable Long id, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());

@@ -35,8 +35,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",             // ✅ Make default landing page public
-                                "/home",         // ✅ Make welcome page public
+                                "/",             //default landing page public
+                                "/home",         //welcome page public
                                 "/login",
                                 "/register",
                                 "/forgot-password",

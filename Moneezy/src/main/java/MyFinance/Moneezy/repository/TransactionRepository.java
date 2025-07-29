@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    // ✅ For filtering by user only
+    // For filtering by user only
     List<Transaction> findAllByUser(User user);
 
-    // ✅ For filtering by user and type (e.g., REVENUE, EXPENSE)
+    // For filtering by user and type (e.g., REVENUE, EXPENSE)
     List<Transaction> findAllByUserAndType(User user, TransactionType type);
 }

@@ -16,7 +16,7 @@ public class Transaction {
 
     private String description;
 
-    @Enumerated(EnumType.STRING) // ✅ Store enum name like "EXPENSE"
+    @Enumerated(EnumType.STRING) // Store enum name like "EXPENSE"
     private TransactionType type;
 
     private String notes;

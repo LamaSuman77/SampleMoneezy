@@ -26,7 +26,7 @@ public class SettingsController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // ✅ Show settings page
+    // Show settings page
     @GetMapping
     public String showSettingsPage(Model model, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
@@ -43,7 +43,7 @@ public class SettingsController {
         return "settings";
     }
 
-    // ✅ Update settings
+    // Update settings
     @PostMapping
     public String updateSettings(@ModelAttribute SettingsForm settingsForm,
                                  Principal principal,
@@ -60,7 +60,7 @@ public class SettingsController {
         user.setPreferredCurrency(settingsForm.getPreferredCurrency());
         user.setNotificationsEnabled(settingsForm.isNotificationsEnabled());
 
-        // ✅ Handle password change if provided
+        // Handle password change if provided
         if (settingsForm.getNewPassword() != null && !settingsForm.getNewPassword().isBlank()) {
             if (!settingsForm.getNewPassword().equals(settingsForm.getConfirmPassword())) {
                 model.addAttribute("error", "New password and confirm password do not match.");
@@ -76,7 +76,7 @@ public class SettingsController {
         return "redirect:/settings";
     }
 
-    // ❌ Delete account
+    // Delete account
     @PostMapping("/delete")
     @Transactional
     public String deleteAccount(Principal principal,

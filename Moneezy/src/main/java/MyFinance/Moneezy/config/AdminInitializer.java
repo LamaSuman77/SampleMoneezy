@@ -21,9 +21,9 @@ public class AdminInitializer {
                 admin.setPreferredCurrency("USD");
                 admin.setNotificationsEnabled(true);
                 adminRepository.save(admin);
-                System.out.println("✅ Default admin user created.");
+                System.out.println("Default admin user created.");
             } else {
-                System.out.println("✅ Admin user already exists.");
+                System.out.println("Admin user already exists.");
             }
         };
     }

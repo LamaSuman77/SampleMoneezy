@@ -20,7 +20,7 @@ public class DashboardController {
         this.userService = userService;
     }
 
-    // ✅ MAIN DASHBOARD ROUTE
+    // MAIN DASHBOARD ROUTE
     @GetMapping("/dashboard")
     public String dashboardPage(Model model, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
@@ -37,7 +37,7 @@ public class DashboardController {
         return "dashboard"; // Refers to templates/dashboard.html
     }
 
-    // ✅ REPORTS PAGE
+    //REPORTS PAGE
     @GetMapping("/reports")
     public String reportsPage(Model model, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
