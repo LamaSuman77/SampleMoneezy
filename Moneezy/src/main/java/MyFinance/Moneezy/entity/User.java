@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "users") // "user" is a reserved keyword in some databases
+@Table(name = "users")
 public class User {
 
     @Id
@@ -23,15 +23,11 @@ public class User {
     @Column(nullable = false)
     private String role = "USER";
 
-    // ✅ Preferred Currency (Default: USD)
     @Column(name = "preferred_currency", nullable = false, columnDefinition = "varchar(255) default 'USD'")
     private String preferredCurrency = "USD";
 
-    // ✅ Notification Toggle
     @Column(name = "notifications_enabled", nullable = false, columnDefinition = "boolean default false")
     private boolean notificationsEnabled = false;
-
-    // === Relationships ===
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Account> accounts;
@@ -41,8 +37,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions;
-
-    // === Getters and Setters ===
 
     public Long getId() {
         return id;

@@ -1,127 +1,161 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Login - Moneezy</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background: #f4f6f9;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364, #4a00e0, #8e2de2, #f7971e);
+            background-size: 600% 600%;
+            animation: gradientShift 15s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .login-container {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            width: 100%;
-            max-width: 400px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.12);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            width: 360px;
+            color: #fff;
         }
 
         .login-container h2 {
-            margin-bottom: 30px;
             text-align: center;
-            color: #2e7d32;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            font-size: 1.8rem;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .login-container button {
-            width: 100%;
-            padding: 12px;
-            background-color: #2e7d32;
-            color: white;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
         }
 
-        .login-container button:hover {
-            background-color: #1b5e20;
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            transform: scale(1.03);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        .message {
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 600;
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
-        .message.error {
-            color: #c62828;
+        .actions label {
+            font-size: 0.85rem;
         }
 
-        .message.success {
-            color: #2e7d32;
+        .links {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-top: 1rem;
         }
 
-        .register-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        .register-link a {
-            color: #2e7d32;
+        .links a {
+            color: #a0c4ff;
             text-decoration: none;
-            font-weight: 600;
         }
 
-        .register-link a:hover {
+        .links a:hover {
             text-decoration: underline;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #ffffff;
+            color: #2c5364;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #f1f5f9;
+        }
+
+        .error-message,
+        .info-message {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+        }
+
+        .info-message {
+            color: #51e2f5;
         }
     </style>
 </head>
 <body>
-<div class="login-container">
+<form class="login-container" th:action="@{/login}" method="post">
     <h2>Login to Moneezy</h2>
 
-    <!-- Display error message if login fails -->
-    <div th:if="${param.error}" class="message error">
+    <div th:if="${param.error}" class="error-message">
         Invalid username or password.
     </div>
 
-    <!-- Display logout success message -->
-    <div th:if="${param.logout}" class="message success">
-        You have been logged out successfully.
+    <div th:if="${message}" class="info-message" th:text="${message}"></div>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="Enter your username" required />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Enter your password" required />
+
+    <div class="actions">
+        <label><input type="checkbox" name="remember-me" /> Remember me</label>
     </div>
 
-    <form th:action="@{/login}" method="post">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required />
+    <button type="submit">Login</button>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required />
-
-        <button type="submit">Login</button>
-    </form>
-
-    <div class="register-link">
-        Don’t have an account? <a th:href="@{/register}">Register here</a>.
+    <div class="links">
+        <a th:href="@{/register}">Create account</a>
+        <a th:href="@{/forgot-password}">Forgot password?</a>
     </div>
-</div>
+</form>
 </body>
 </html>

@@ -113,8 +113,8 @@
         <button type="submit">Register</button>
     </form>
 
+    <div th:if="${success}" class="message success" th:text="${success}"></div>
     <div th:if="${error}" class="message error" th:text="${error}"></div>
-    <div th:if="${message}" class="message success" th:text="${message}"></div>
 
     <div class="login-link">
         Already have an account? <a th:href="@{/login}">Login here</a>.

@@ -7,7 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @GetMapping("/")
-    public String home() {
-        return "home";  // You need a file named home.html in /templates
+    public String redirectToHome() {
+        return "redirect:/home";  // Redirect root to /home
+    }
+
+    @GetMapping("/home")
+    public String homePage() {
+        return "welcome";  // Renders welcome.html
     }
 }
