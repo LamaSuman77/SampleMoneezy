@@ -34,16 +34,17 @@ public class SettingsController {
             return "redirect:/login";
         }
 
-        SettingsForm form = new SettingsForm();
-        form.setEmail(user.getEmail());
-        form.setPreferredCurrency(user.getPreferredCurrency());
-        form.setNotificationsEnabled(user.isNotificationsEnabled());
-
-        model.addAttribute("settingsForm", form);
+        if (!model.containsAttribute("settingsForm")) {
+            SettingsForm form = new SettingsForm();
+            form.setEmail(user.getEmail());
+            form.setPreferredCurrency(user.getPreferredCurrency());
+            form.setNotificationsEnabled(user.isNotificationsEnabled());
+            model.addAttribute("settingsForm", form);
+        }
         return "settings";
     }
 
-    // Update settings
+    // Update settings (profile + password)
     @PostMapping
     public String updateSettings(@ModelAttribute SettingsForm settingsForm,
                                  Principal principal,
@@ -55,24 +56,54 @@ public class SettingsController {
             return "redirect:/login";
         }
 
-        // Update preferences
+        // Always update profile preferences
         user.setEmail(settingsForm.getEmail());
         user.setPreferredCurrency(settingsForm.getPreferredCurrency());
         user.setNotificationsEnabled(settingsForm.isNotificationsEnabled());
 
-        // Handle password change if provided
-        if (settingsForm.getNewPassword() != null && !settingsForm.getNewPassword().isBlank()) {
-            if (!settingsForm.getNewPassword().equals(settingsForm.getConfirmPassword())) {
+        // Handle password change if new password provided
+        String currentPassword = settingsForm.getCurrentPassword();
+        String newPassword     = settingsForm.getNewPassword();
+        String confirmPassword = settingsForm.getConfirmPassword();
+
+        if (newPassword != null && !newPassword.isBlank()) {
+            // Require current password & verify
+            if (currentPassword == null || currentPassword.isBlank()
+                    || !passwordEncoder.matches(currentPassword, user.getPassword())) {
+                model.addAttribute("error", "Current password is incorrect.");
+                model.addAttribute("settingsForm", settingsForm);
+                return "settings";
+            }
+
+            // Confirm match
+            if (!newPassword.equals(confirmPassword)) {
                 model.addAttribute("error", "New password and confirm password do not match.");
                 model.addAttribute("settingsForm", settingsForm);
                 return "settings";
             }
 
-            user.setPassword(passwordEncoder.encode(settingsForm.getNewPassword()));
+            // Minimum length
+            if (newPassword.length() < 8) {
+                model.addAttribute("error", "New password must be at least 8 characters long.");
+                model.addAttribute("settingsForm", settingsForm);
+                return "settings";
+            }
+
+            // Must differ from old
+            if (passwordEncoder.matches(newPassword, user.getPassword())) {
+                model.addAttribute("error", "New password must be different from the current password.");
+                model.addAttribute("settingsForm", settingsForm);
+                return "settings";
+            }
+
+            // Update password
+            user.setPassword(passwordEncoder.encode(newPassword));
         }
 
         userService.save(user);
         redirectAttributes.addFlashAttribute("success", "Settings updated successfully.");
+        // Refill non-password fields after redirect (so the form shows updated values)
+        redirectAttributes.addFlashAttribute("settingsForm", settingsForm);
         return "redirect:/settings";
     }
 
@@ -82,18 +113,15 @@ public class SettingsController {
     public String deleteAccount(Principal principal,
                                 HttpServletRequest request,
                                 RedirectAttributes redirectAttributes) {
-
         User user = userService.getUserByUsername(principal.getName());
         if (user != null) {
             userService.delete(user);
 
-            // Invalidate session
             HttpSession session = request.getSession(false);
             if (session != null) session.invalidate();
 
             redirectAttributes.addFlashAttribute("message", "Your account has been deleted.");
         }
-
         return "redirect:/logout";
     }
 }

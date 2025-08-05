@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Transactions — Moneezy (Admin)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#f5f7fb; --panel:#ffffff; --text:#1e293b; --muted:#64748b;
+      --accent:#2563eb; --danger:#dc2626; --ok:#16a34a; --border:#e5e7eb;
+    }
+    * { box-sizing:border-box; font-family:'Inter',sans-serif; }
+    body { margin:0; background:var(--bg); color:var(--text); }
+    .wrap { max-width:900px; margin:32px auto; padding:0 16px; }
+    .hdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    h1 { font-size:22px; margin:0; }
+    .panel { background:var(--panel); border-radius:14px; box-shadow:0 6px 18px rgba(15,23,42,.06); padding:16px; }
+    table { width:100%; border-collapse:collapse; margin-top:16px; }
+    th, td { padding:12px 14px; border-bottom:1px solid #f1f5f9; text-align:left; font-size:14px; }
+    th { background:#f8fafc; color:#334155; font-weight:600; }
+    tr:hover td { background:#fafafa; }
+    .summary { display:flex; gap:24px; margin-top:24px; }
+    .summary div {
+        background:#e0e7ff;
+        padding:16px;
+        border-radius:12px;
+        flex:1;
+        text-align:center;
+        color:#3730a3;
+        font-weight:600;
+    }
+    a.btn {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 8px 14px;
+        background: var(--accent);
+        color: white;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    .empty { text-align:center; padding:36px; color:var(--muted); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <h1>User Transactions for <span th:text="${user.username}">Username</span></h1>
+    <a th:href="@{/admin/users}" class="btn">← Back to Users</a>
+  </div>
+
+  <div class="panel">
+    <div>
+      <strong>Email:</strong> <span th:text="${user.email}">email@example.com</span><br />
+      <strong>User ID:</strong> <span th:text="${user.id}">1</span>
+    </div>
+
+    <div class="summary">
+      <div>
+        Monthly Revenue<br />
+        <span th:text="'Rs. ' + ${latestMonthlyRevenue != null ? #numbers.formatDecimal(latestMonthlyRevenue, 2) : '0.00'}">Rs. 0.00</span>
+      </div>
+      <div>
+        Monthly Expenses<br />
+        <span th:text="'Rs. ' + ${latestMonthlyExpenses != null ? #numbers.formatDecimal(latestMonthlyExpenses, 2) : '0.00'}">Rs. 0.00</span>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="tx, iterStat : ${transactions}">
+        <td th:text="${iterStat.index + 1}">1</td>
+        <td th:text="${#dates.format(tx.date, 'yyyy-MM-dd')}">2025-01-01</td>
+        <td th:text="${tx.type}">REVENUE</td>
+        <td th:text="${tx.category}">Salary</td>
+        <td th:text="'Rs. ' + #numbers.formatDecimal(tx.amount, 2)">Rs. 1000.00</td>
+        <td th:text="${tx.description}">Monthly salary</td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(transactions)}">
+        <td colspan="6" class="empty">No transactions found for this user.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

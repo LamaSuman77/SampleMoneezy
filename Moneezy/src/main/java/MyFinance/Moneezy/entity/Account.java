@@ -34,4 +34,17 @@ public class Account {
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
+    // New methods to update balance safely
+    public void increaseBalance(double amount) {
+        if (amount > 0) {
+            this.balance += amount;
+        }
+    }
+
+    public void decreaseBalance(double amount) {
+        if (amount > 0) {
+            this.balance -= amount;
+        }
+    }
 }

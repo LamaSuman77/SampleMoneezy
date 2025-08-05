@@ -28,6 +28,7 @@ public class Transaction {
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id") // 🟢 Recommended: makes the column explicit and readable
     private User user;
 
     // Getters and Setters

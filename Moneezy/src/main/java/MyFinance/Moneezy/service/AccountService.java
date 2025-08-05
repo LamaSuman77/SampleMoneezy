@@ -1,6 +1,8 @@
 package MyFinance.Moneezy.service;
 
 import MyFinance.Moneezy.entity.Account;
+import MyFinance.Moneezy.entity.Transaction;
+import MyFinance.Moneezy.entity.TransactionType;
 import MyFinance.Moneezy.entity.User;
 import MyFinance.Moneezy.repository.AccountRepository;
 import org.springframework.stereotype.Service;
@@ -47,5 +49,17 @@ public class AccountService {
     // For admin only: get all accounts across users
     public List<Account> getAll() {
         return accountRepository.findAll();
+    }
+
+    // ✅ Balance update logic — safely used from TransactionService
+    public void updateBalanceOnTransaction(Account account, Transaction transaction) {
+        if (transaction.getType() == TransactionType.REVENUE) {
+            account.increaseBalance(transaction.getAmount());
+        } else if (transaction.getType() == TransactionType.EXPENSE) {
+            account.decreaseBalance(transaction.getAmount());
+        }
+
+        // Save updated balance to DB
+        accountRepository.save(account);
     }
 }

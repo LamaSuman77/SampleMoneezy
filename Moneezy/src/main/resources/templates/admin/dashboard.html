@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364, #4a00e0, #8e2de2, #f7971e);
+      background-size: 600% 600%;
+      animation: gradientShift 15s ease infinite;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 280px;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.15);
+      padding: 2rem;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .sidebar h2 {
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 10px;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateX(5px);
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+    }
+
+    .content-section {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      padding: 2rem;
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    .dashboard-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 1.5rem;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #a0c4ff;
+    }
+
+    .stat-card p {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .data-table th {
+      background: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .data-table td {
+      color: #e0e0e0;
+    }
+
+    .data-table tr:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .search-filter {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-input,
+    .filter-select {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 1rem;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .filter-select option {
+      background: #2c3e50;
+      color: #ffffff;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .logout-section {
+      margin-top: auto;
+      padding-top: 2rem;
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #a0c4ff;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 2rem;
+      color: #a0c4ff;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 1rem;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
+      .search-filter {
+        flex-direction: column;
+      }
+
+      .dashboard-overview {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+
+    <button class="nav-item active" onclick="showDashboard()">Dashboard</button>
+    <button class="nav-item" onclick="showTransactions()">Transactions</button>
+    <button class="nav-item" onclick="showReports()">Reports</button>
+    <a th:href="@{/admin/users}" class="nav-item">Manage Users</a>
+    <a th:href="@{/admin/settings}" class="nav-item">Settings</a>
+
+    <div class="logout-section">
+      <form th:action="@{/logout}" method="post">
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Dashboard Overview -->
+    <div id="dashboard-section" class="content-section active">
+      <h1>Welcome, <span th:text="${adminName}">Admin</span>!</h1>
+
+      <div class="dashboard-overview">
+        <div class="stat-card">
+          <h3>Total Users</h3>
+          <p th:text="${userCount}">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Transactions</h3>
+          <p id="total-transactions">Loading...</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Revenue</h3>
+          <p id="total-revenue">Loading...</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Expenses</h3>
+          <p id="total-expenses">Loading...</p>
+        </div>
+      </div>
+
+      <div style="background: rgba(255, 255, 255, 0.15); padding: 1.5rem; border-radius: 15px;">
+        <h3>Quick Actions</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+          <button class="btn" onclick="showTransactions()">View All Transactions</button>
+          <button class="btn" onclick="showReports()">Generate Reports</button>
+          <button class="btn" onclick="refreshData()">Refresh Data</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transactions Section -->
+    <div id="transactions-section" class="content-section">
+      <h1>User Transactions</h1>
+
+      <div class="search-filter">
+        <input type="text" class="search-input" placeholder="Search by username..." id="search-username">
+        <select class="filter-select" id="filter-type">
+          <option value="">All Types</option>
+          <option value="revenue">Revenue</option>
+          <option value="expense">Expense</option>
+        </select>
+        <button class="btn" onclick="filterTransactions()">Filter</button>
+        <button class="btn" onclick="exportTransactions()">Export CSV</button>
+      </div>
+
+      <div id="transactions-loading" class="loading">Loading transactions...</div>
+      <div id="transactions-content"></div>
+    </div>
+
+    <!-- Reports Section -->
+    <div id="reports-section" class="content-section">
+      <h1>Financial Reports</h1>
+
+      <div class="search-filter">
+        <select class="filter-select" id="report-period">
+          <option value="all">All Time</option>
+          <option value="month">This Month</option>
+          <option value="quarter">This Quarter</option>
+          <option value="year">This Year</option>
+        </select>
+        <button class="btn" onclick="generateReport()">Generate Report</button>
+        <button class="btn" onclick="exportReport()">Export Report</button>
+      </div>
+
+      <div id="reports-loading" class="loading">Loading reports...</div>
+      <div id="reports-content"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Sample data - In a real application, this would come from your backend
+  let transactionsData = [];
+
+  let filteredTransactions = [...transactionsData];
+
+  // Navigation functions
+  function showDashboard() {
+    hideAllSections();
+    document.getElementById('dashboard-section').classList.add('active');
+    setActiveNav(0);
+    loadDashboardData();
+  }
+
+  function showTransactions() {
+    hideAllSections();
+    document.getElementById('transactions-section').classList.add('active');
+    setActiveNav(1);
+    loadTransactions();
+  }
+
+  function showReports() {
+    hideAllSections();
+    document.getElementById('reports-section').classList.add('active');
+    setActiveNav(2);
+    loadReports();
+  }
+
+  function hideAllSections() {
+    document.querySelectorAll('.content-section').forEach(section => {
+      section.classList.remove('active');
+    });
+  }
+
+  function setActiveNav(index) {
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    document.querySelectorAll('.nav-item')[index].classList.add('active');
+  }
+
+  // Data loading functions
+  function loadDashboardData() {
+    const totalTransactions = transactionsData.length;
+    const totalRevenue = transactionsData
+      .filter(t => t.type === 'revenue')
+      .reduce((sum, t) => sum + t.amount, 0);
+    const totalExpenses = transactionsData
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    document.getElementById('total-transactions').textContent = totalTransactions;
+    document.getElementById('total-revenue').textContent = `Rs. ${totalRevenue.toFixed(2)}`;
+    document.getElementById('total-expenses').textContent = `Rs. ${totalExpenses.toFixed(2)}`;
+  }
+
+  function loadTransactions() {
+    document.getElementById("transactions-loading").style.display = "block";
+    document.getElementById("transactions-content").innerHTML = "";
+
+    fetch("/admin/transactions/all")
+      .then(response => response.json())
+      .then(data => {
+        transactionsData = data; // Update global transactionsData
+        filteredTransactions = [...transactionsData];
+        document.getElementById("transactions-loading").style.display = "none";
+        displayTransactions(filteredTransactions);
+        loadDashboardData(); // Refresh dashboard stats with real data
+      })
+      .catch(error => {
+        console.error("Error fetching transactions:", error);
+        document.getElementById("transactions-loading").style.display = "none";
+        document.getElementById("transactions-content").innerHTML =
+          "<div class=\"no-data\">Error loading transactions. Please try again.</div>";
+      });
+  }
+
+  function displayTransactions(transactions) {
+    const content = document.getElementById('transactions-content');
+
+    if (transactions.length === 0) {
+      content.innerHTML = '<div class="no-data">No transactions found.</div>';
+      return;
+    }
+
+    // Group transactions by user
+    const userTransactions = {};
+    transactions.forEach(transaction => {
+      const username = transaction.user ? transaction.user.username : 'Unknown User';
+      if (!userTransactions[username]) {
+        userTransactions[username] = [];
+      }
+      userTransactions[username].push(transaction);
+    });
+
+    let html = '';
+    Object.keys(userTransactions).forEach(username => {
+      const userTxns = userTransactions[username];
+
+      // Calculate user balance
+      let userBalance = 0;
+      userTxns.forEach(txn => {
+        if (txn.type === 'revenue') {
+          userBalance += txn.amount;
+        } else {
+          userBalance -= txn.amount;
+        }
+      });
+
+      const transactionCount = userTxns.length;
+
+      html += `
+        <div style="margin-bottom: 2rem; background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+          <h3 style="color: #a0c4ff; margin-bottom: 1rem;">
+            ${username}
+            <span style="font-size: 0.9rem; font-weight: normal;">
+              (${transactionCount} transactions | Balance: Rs. ${userBalance.toFixed(2)})
+            </span>
+          </h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      userTxns.forEach(transaction => {
+        const date = new Date(transaction.date);
+        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        const typeClass = transaction.type === 'revenue' ? 'color: #4caf50' : 'color: #f44336';
+
+        html += `
+          <tr>
+            <td>${formattedDate}</td>
+            <td style="${typeClass}; font-weight: 600; text-transform: capitalize;">${transaction.type}</td>
+            <td>${transaction.description}</td>
+            <td>Rs. ${transaction.amount.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
+    });
+
+    content.innerHTML = html;
+  }
+
+  function loadReports() {
+    document.getElementById("reports-loading").style.display = "block";
+    document.getElementById("reports-content").innerHTML = "";
+
+    // Ensure transactionsData is loaded before generating reports
+    if (transactionsData.length === 0) {
+      fetch("/admin/transactions/all")
+        .then(response => response.json())
+        .then(data => {
+          transactionsData = data;
+          document.getElementById("reports-loading").style.display = "none";
+          generateReport();
+        })
+        .catch(error => {
+          console.error("Error fetching transactions for reports:", error);
+          document.getElementById("reports-loading").style.display = "none";
+          document.getElementById("reports-content").innerHTML =
+            "<div class=\"no-data\">Error loading report data. Please try again.</div>";
+        });
+    } else {
+      document.getElementById("reports-loading").style.display = "none";
+      generateReport();
+    }
+  }
+
+  function generateReport() {
+    const period = document.getElementById('report-period').value;
+    let reportData = [...transactionsData];
+
+    // Filter by period (simplified for demo)
+    if (period !== 'all') {
+      const now = new Date();
+      const cutoffDate = new Date();
+
+      switch(period) {
+        case 'month':
+          cutoffDate.setMonth(now.getMonth() - 1);
+          break;
+        case 'quarter':
+          cutoffDate.setMonth(now.getMonth() - 3);
+          break;
+        case 'year':
+          cutoffDate.setFullYear(now.getFullYear() - 1);
+          break;
+      }
+
+      reportData = reportData.filter(t => new Date(t.date) >= cutoffDate);
+    }
+
+    const totalRevenue = reportData
+      .filter(t => t.type === 'revenue')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const totalExpenses = reportData
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const netProfit = totalRevenue - totalExpenses;
+    const uniqueUsers = [...new Set(reportData.map(t => t.user ? t.user.username : 'Unknown'))].length;
+
+    const reportHtml = `
+      <div style="background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 15px;">
+        <h3 style="color: #a0c4ff; margin-bottom: 1.5rem;">Financial Summary Report</h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+            <h4 style="color: #4caf50;">Total Revenue</h4>
+            <p style="font-size: 1.5rem; font-weight: 600;">Rs. ${totalRevenue.toFixed(2)}</p>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+            <h4 style="color: #f44336;">Total Expenses</h4>
+            <p style="font-size: 1.5rem; font-weight: 600;">Rs. ${totalExpenses.toFixed(2)}</p>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+            <h4 style="color: ${netProfit >= 0 ? '#4caf50' : '#f44336'};">Net Profit</h4>
+            <p style="font-size: 1.5rem; font-weight: 600;">Rs. ${netProfit.toFixed(2)}</p>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+            <h4 style="color: #a0c4ff;">Active Users</h4>
+            <p style="font-size: 1.5rem; font-weight: 600;">${uniqueUsers}</p>
+          </div>
+        </div>
+
+        <h4 style="color: #a0c4ff; margin-bottom: 1rem;">User Performance</h4>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Total Transactions</th>
+              <th>Revenue</th>
+              <th>Expenses</th>
+              <th>Net Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    // Calculate per-user statistics
+    const userStats = {};
+    reportData.forEach(transaction => {
+      if (!userStats[transaction.username]) {
+        userStats[transaction.username] = {
+          transactions: 0,
+          revenue: 0,
+          expenses: 0
+        };
+      }
+
+      userStats[transaction.username].transactions++;
+      if (transaction.type === 'revenue') {
+        userStats[transaction.username].revenue += transaction.amount;
+      } else {
+        userStats[transaction.username].expenses += transaction.amount;
+      }
+    });
+
+    let userStatsHtml = '';
+    Object.keys(userStats).forEach(username => {
+      const stats = userStats[username];
+      const netBalance = stats.revenue - stats.expenses;
+
+      userStatsHtml += `
+        <tr>
+          <td>${username}</td>
+          <td>${stats.transactions}</td>
+          <td style="color: #4caf50;">Rs. ${stats.revenue.toFixed(2)}</td>
+          <td style="color: #f44336;">Rs. ${stats.expenses.toFixed(2)}</td>
+          <td style="color: ${netBalance >= 0 ? '#4caf50' : '#f44336'};">Rs. ${netBalance.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById('reports-content').innerHTML = reportHtml + userStatsHtml + `
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  // Filter and search functions
+  function filterTransactions() {
+    const searchTerm = document.getElementById('search-username').value.toLowerCase();
+    const typeFilter = document.getElementById('filter-type').value;
+
+    filteredTransactions = transactionsData.filter(transaction => {
+      const matchesSearch = transaction.username.toLowerCase().includes(searchTerm);
+      const matchesType = !typeFilter || transaction.type === typeFilter;
+      return matchesSearch && matchesType;
+    });
+
+    displayTransactions(filteredTransactions);
+  }
+
+  function exportTransactions() {
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + "Username,Type,Description,Amount,Date,Balance\n"
+      + filteredTransactions.map(t =>
+          `${t.username},${t.type},${t.description},${t.amount},${t.date},${t.balance}`
+        ).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "transactions.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function exportReport() {
+    alert("Report export functionality would be implemented here.");
+  }
+
+  function refreshData() {
+    // In a real application, this would fetch fresh data from the server
+    loadDashboardData();
+    alert("Data refreshed successfully!");
+  }
+
+  // Initialize dashboard on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardData();
+  });
+</script>
+
+</body>
+</html>
+

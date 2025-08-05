@@ -6,6 +6,6 @@ public enum TransactionType {
 
     @Override
     public String toString() {
-        return name(); // Or return name().toLowerCase() if needed
+        return name(); // You can change to name().toLowerCase() if needed
     }
 }

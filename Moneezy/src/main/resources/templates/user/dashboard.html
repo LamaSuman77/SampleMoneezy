@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard - Moneezy</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+            rel="stylesheet"
+    />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f4f6f9;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #1e293b;
+            color: white;
+            height: 100vh;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            position: fixed;
+            z-index: 1000;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .sidebar a,
+        .sidebar form button {
+            display: block;
+            color: #cfd8dc;
+            text-decoration: none;
+            margin-bottom: 18px;
+            font-weight: 500;
+            background: none;
+            border: none;
+            padding: 10px 0;
+            width: 100%;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar a::after,
+        .sidebar form button::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(
+                120deg,
+                rgba(0, 123, 255, 0.4),
+                rgba(255, 255, 255, 0)
+            );
+            transition: all 0.4s ease;
+        }
+
+        .sidebar a:hover::after,
+        .sidebar form button:hover::after {
+            left: 0;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active,
+        .sidebar form button:hover {
+            color: white;
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 60px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .username-container {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .username-animation {
+            font-size: 3rem;
+            font-weight: 600;
+            color: #1a2332;
+            text-shadow: 2px 2px 4px rgba(26, 35, 50, 0.3);
+            display: inline-block;
+        }
+
+        .username-letter {
+            display: inline-block;
+            opacity: 0;
+            animation: letterFadeInOut 4s infinite;
+        }
+
+        @keyframes letterFadeInOut {
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            15%,
+            85% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        /* Changed buttons to links styled as buttons */
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            user-select: none;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-text {
+            display: inline-block;
+        }
+
+        .btn-letter {
+            display: inline-block;
+            opacity: 0;
+        }
+
+        .expense-btn .btn-letter {
+            animation: expenseLetterAnimation 3s infinite;
+        }
+
+        .revenue-btn .btn-letter {
+            animation: revenueLetterAnimation 3s infinite;
+        }
+
+        @keyframes expenseLetterAnimation {
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+            20%,
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            90% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        @keyframes revenueLetterAnimation {
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+            20%,
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            90% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .summary-boxes {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+            min-width: 250px;
+            flex: 1;
+            max-width: 300px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s forwards;
+        }
+
+        .box:nth-child(1) {
+            animation: floatUp 1.5s ease-out forwards;
+        }
+
+        .box:nth-child(2) {
+            animation: fallDown 1.5s ease-out forwards;
+        }
+
+        .box:nth-child(3) {
+            animation: pulseFade 1.8s ease-out forwards;
+        }
+
+        .box h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+
+        .box p {
+            font-size: 26px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(60px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fallDown {
+            0% {
+                transform: translateY(-60px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulseFade {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 30px 20px;
+            }
+
+            .username-animation {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .action-btn {
+                min-width: 250px;
+            }
+
+            .summary-boxes {
+                flex-direction: column;
+            }
+
+            .box {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h2>Moneezy</h2>
+    <a href="/dashboard" class="nav-link active">Dashboard</a>
+    <a href="/revenues/new" class="nav-link">Add Revenue</a>
+    <a href="/expenses/new" class="nav-link">Add Expense</a>
+    <a href="/revenues" class="nav-link">View Revenues</a>
+    <a href="/expenses" class="nav-link">View Expenses</a>
+    <a href="/reports" class="nav-link">Reports</a>
+    <a href="/settings" class="nav-link">Settings</a>
+    <form th:action="@{/logout}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<div class="main">
+    <div class="username-container">
+        <div
+                class="username-animation"
+                id="username-display"
+                th:data-username="${username}"
+        >
+            <!-- JS will fill this -->
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="/expenses/new" class="action-btn expense-btn">
+            <span class="btn-text" id="expense-text">
+                <!-- Animated letters for Add Expense -->
+            </span>
+        </a>
+        <a href="/revenues/new" class="action-btn revenue-btn">
+            <span class="btn-text" id="revenue-text">
+                <!-- Animated letters for Add Revenue -->
+            </span>
+        </a>
+    </div>
+
+    <div class="summary-boxes">
+        <div class="box">
+            <h3>Total Revenue</h3>
+            <p th:text="${totalRevenue}">Rs. 0</p>
+        </div>
+        <div class="box">
+            <h3>Total Expenses</h3>
+            <p th:text="${totalExpenses}">Rs. 0</p>
+        </div>
+        <div class="box">
+            <h3>Net Balance</h3>
+            <p th:text="${netBalance}">Rs. 0</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animate "Welcome Back [Username]"
+    function animateUsername() {
+        const usernameDisplay = document.getElementById('username-display');
+        const username = usernameDisplay.getAttribute('data-username') || 'User';
+
+        const fullText = `Welcome Back ${username}`;
+        usernameDisplay.innerHTML = '';
+
+        for (let i = 0; i < fullText.length; i++) {
+            const char = fullText[i];
+            if (char === ' ') {
+                usernameDisplay.appendChild(document.createTextNode(' '));
+            } else {
+                const span = document.createElement('span');
+                span.classList.add('username-letter');
+                span.style.animationDelay = i * 0.15 + 's';
+                span.textContent = char;
+                usernameDisplay.appendChild(span);
+            }
+        }
+    }
+
+    // Animate Add Expense button text letters
+    function animateAddExpenseText() {
+        const text = "Add Expense";
+        const container = document.getElementById('expense-text');
+        container.innerHTML = '';
+        for (let i = 0; i < text.length; i++) {
+            const span = document.createElement('span');
+            span.classList.add('btn-letter');
+            span.style.animation = `expenseLetterAnimation 3s infinite`;
+            span.style.animationDelay = (i * 0.3) + 's';
+            span.textContent = text[i];
+            container.appendChild(span);
+        }
+    }
+
+    // Animate Add Revenue button text letters
+    function animateAddRevenueText() {
+        const text = "Add Revenue";
+        const container = document.getElementById('revenue-text');
+        container.innerHTML = '';
+        for (let i = 0; i < text.length; i++) {
+            const span = document.createElement('span');
+            span.classList.add('btn-letter');
+            span.style.animation = `revenueLetterAnimation 3s infinite`;
+            span.style.animationDelay = (i * 0.3) + 's';
+            span.textContent = text[i];
+            container.appendChild(span);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        animateUsername();
+        animateAddExpenseText();
+        animateAddRevenueText();
+    });
+</script>
+</body>
+</html>

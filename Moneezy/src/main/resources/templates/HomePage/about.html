@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>About Moneezy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: 'Inter', sans-serif;
+          background-color: #f5f7fa;
+        }
+
+        .container {
+          max-width: 960px;
+          margin: 60px auto;
+          padding: 40px;
+          background: #ffffff;
+          border-radius: 16px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+          text-align: center;
+        }
+
+        h1 {
+          color: #2c3e50;
+          font-size: 36px;
+          margin-bottom: 20px;
+        }
+
+        p {
+          font-size: 18px;
+          color: #34495e;
+          line-height: 1.6;
+          margin-bottom: 30px;
+        }
+
+        .carousel {
+          position: relative;
+          width: 100%;
+          max-height: 480px;
+          overflow: hidden;
+          border-radius: 12px;
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+          margin-top: 20px;
+          background: white;
+          min-height: 480px;
+        }
+
+        /* Slide base style */
+        .carousel > * {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 480px;
+          border-radius: 12px;
+          opacity: 0;
+          transition: opacity 1s ease-in-out;
+          pointer-events: none; /* disable pointer on hidden slides */
+          background: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        /* Show active slide */
+        .carousel > *.active {
+          opacity: 1;
+          position: relative;
+          pointer-events: auto;
+          background: none;
+          display: block;
+        }
+
+        .carousel img {
+          object-fit: cover;
+          width: 100%;
+          height: 480px;
+          border-radius: 12px;
+        }
+
+        .dots {
+          text-align: center;
+          padding: 15px 0;
+          margin-top: 5px;
+          user-select: none;
+        }
+
+        .dots span {
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          margin: 0 8px;
+          background-color: #bbb;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .dots span.active {
+          background-color: #2c3e50;
+        }
+
+        /* New Animated Bar Graph Slide */
+        .bargraph-slide {
+          background: linear-gradient(135deg, #001124, #000811);
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 12px;
+          padding-bottom: 20px;
+          box-shadow: 0 0 40px #007cffcc inset;
+          height: 480px;
+          user-select: none;
+          overflow: hidden;
+        }
+
+        /* Bars container */
+        .bargraph-bars {
+          display: flex;
+          gap: 25px;
+          align-items: flex-end;
+          width: 80%;
+          max-width: 600px;
+          height: 320px;
+          position: relative;
+          z-index: 3;
+          margin: 0 auto;
+        }
+
+        /* Bars style */
+        .bar {
+          width: 40px;
+          background: linear-gradient(to top, #00ffe1, #007cff);
+          animation: pulse 1.5s infinite ease-in-out;
+          border-radius: 10px;
+          box-shadow: 0 0 20px rgba(0, 255, 225, 0.85);
+          transform-origin: center bottom;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0s; }
+        .bar:nth-child(2) { animation-delay: 0.25s; }
+        .bar:nth-child(3) { animation-delay: 0.5s; }
+        .bar:nth-child(4) { animation-delay: 0.75s; }
+        .bar:nth-child(5) { animation-delay: 1s; }
+
+        @keyframes pulse {
+          0%, 100% { height: 60px; }
+          50% { height: 270px; }
+        }
+
+        /* Text behind bars */
+        .bargraph-text {
+          position: absolute;
+          top: 18%;
+          width: 100%;
+          text-align: center;
+          font-weight: 900;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          pointer-events: none;
+          user-select: none;
+          z-index: 1;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-fill-color: transparent;
+
+          background-image: linear-gradient(90deg, #00ffe1, #007cff, #00aaff);
+          background-size: 200% 100%;
+          animation: textGradient 5s linear infinite;
+          text-shadow:
+            0 0 8px rgba(0, 255, 225, 0.7),
+            0 0 15px rgba(0, 120, 255, 0.5);
+        }
+
+        @keyframes textGradient {
+          0% {
+            background-position: 0% 0%;
+          }
+          100% {
+            background-position: 200% 0%;
+          }
+        }
+
+        .bargraph-text h1 {
+          font-size: 72px;
+          margin: 0;
+          letter-spacing: 0.4em;
+        }
+
+        .bargraph-text p {
+          font-size: 28px;
+          margin-top: 8px;
+          letter-spacing: 0.3em;
+          font-weight: 700;
+          color: #00dfffcc;
+          text-shadow: 0 0 5px #00c4ffcc;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>About Moneezy</h1>
+    <p>
+        Moneezy is your smart financial companion, crafted to help you track, plan, and grow your savings with ease.
+        Designed for users who want clarity and control over their money, Moneezy gives you real-time insight into your expenses, goals, and habits — all in one intuitive platform.
+    </p>
+
+    <div class="carousel" aria-label="Saving and happiness slideshow">
+        <!-- Slide 1 -->
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80" alt="Girl smiling, looking at ATM card, typing code on mobile, laptop beside her" class="active" />
+        <!-- Slide 2 -->
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80" alt="Financial dashboard" />
+        <!-- Slide 3: New animated bar graph -->
+        <div class="bargraph-slide" role="img" aria-label="Animated bar graph with Moneezy text">
+            <div class="bargraph-text" aria-hidden="true">
+                <h1>Moneezy</h1>
+                <p>My Personal Financer</p>
+            </div>
+            <div class="bargraph-bars" aria-hidden="true">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+
+        <div class="dots" role="tablist" aria-label="Slideshow navigation">
+            <span class="active" role="tab" tabindex="0" aria-selected="true" aria-controls="slide1" id="dot1"></span>
+            <span role="tab" tabindex="-1" aria-selected="false" aria-controls="slide2" id="dot2"></span>
+            <span role="tab" tabindex="-1" aria-selected="false" aria-controls="slide3" id="dot3"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.carousel > img, .carousel > .bargraph-slide');
+    const dots = document.querySelectorAll('.dots span');
+    let current = 0;
+    const slideCount = slides.length;
+
+    // Timings
+    const slideIntervalTime = 1000; // 1 second for images
+    const barGraphSlideIndex = 2;   // index of bar graph slide (0-based)
+    const barGraphDuration = 5000;  // 5 seconds for bar graph slide
+
+    let slideInterval = null;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+        dots[i].classList.toggle('active', i === index);
+        dots[i].setAttribute('aria-selected', i === index ? 'true' : 'false');
+        dots[i].tabIndex = i === index ? 0 : -1;
+      });
+      current = index;
+    }
+
+    function nextSlide() {
+      let next = (current + 1) % slideCount;
+      showSlide(next);
+
+      clearInterval(slideInterval);
+
+      if (next === barGraphSlideIndex) {
+        slideInterval = setInterval(nextSlide, barGraphDuration);
+      } else {
+        slideInterval = setInterval(nextSlide, slideIntervalTime);
+      }
+    }
+
+    // Start with image slide interval
+    slideInterval = setInterval(nextSlide, slideIntervalTime);
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        showSlide(index);
+        clearInterval(slideInterval);
+        if (index === barGraphSlideIndex) {
+          slideInterval = setInterval(nextSlide, barGraphDuration);
+        } else {
+          slideInterval = setInterval(nextSlide, slideIntervalTime);
+        }
+      });
+      dot.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          showSlide(index);
+          clearInterval(slideInterval);
+          if (index === barGraphSlideIndex) {
+            slideInterval = setInterval(nextSlide, barGraphDuration);
+          } else {
+            slideInterval = setInterval(nextSlide, slideIntervalTime);
+          }
+        }
+      });
+    });
+</script>
+</body>
+</html>

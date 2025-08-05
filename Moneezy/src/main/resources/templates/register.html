@@ -7,7 +7,9 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: #f4f6f9;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364, #4a00e0, #8e2de2, #f7971e);
+            background-size: 600% 600%;
+            animation: gradientShift 15s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,54 +17,74 @@
             margin: 0;
         }
 
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .register-container {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            padding: 2.5rem;
             width: 100%;
             max-width: 450px;
+            color: #ffffff;
         }
 
         .register-container h2 {
             margin-bottom: 30px;
             text-align: center;
-            color: #2e7d32;
+            color: #ffffff;
+            font-weight: 600;
         }
 
         label {
             display: block;
             margin-bottom: 6px;
             font-weight: 600;
-            color: #333;
+            color: #ffffff;
         }
 
         input[type="text"],
         input[type="email"],
         input[type="password"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
             font-size: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            backdrop-filter: blur(5px);
+        }
+
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         button {
             width: 100%;
             padding: 12px;
-            background-color: #2e7d32;
-            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
         button:hover {
-            background-color: #1b5e20;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         .message {
@@ -72,27 +94,29 @@
         }
 
         .message.error {
-            color: #c62828;
+            color: #ff6b6b;
         }
 
         .message.success {
-            color: #2e7d32;
+            color: #51cf66;
         }
 
         .login-link {
             text-align: center;
             margin-top: 20px;
             font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .login-link a {
-            color: #2e7d32;
+            color: #74c0fc;
             text-decoration: none;
             font-weight: 600;
         }
 
         .login-link a:hover {
             text-decoration: underline;
+            color: #ffffff;
         }
     </style>
 </head>

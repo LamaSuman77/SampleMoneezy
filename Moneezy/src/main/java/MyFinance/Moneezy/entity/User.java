@@ -1,6 +1,7 @@
 package MyFinance.Moneezy.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,14 +31,20 @@ public class User {
     private boolean notificationsEnabled = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Account> accounts;
+    private List<Account> accounts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Budget> budgets;
+    private List<Budget> budgets = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> transactions;
+    private List<Transaction> transactions = new ArrayList<>();
 
+    // 🔹 Convenience method to get default (first) account
+    public Account getDefaultAccount() {
+        return (accounts != null && !accounts.isEmpty()) ? accounts.get(0) : null;
+    }
+
+    // 🔹 Getters & Setters
     public Long getId() {
         return id;
     }
